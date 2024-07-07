@@ -17,6 +17,7 @@ class _JsonParsingScreenState extends State<JsonParsingScreen> {
   ''';
 
   bool inProgress = false;
+  bool inProgressTwo = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,47 +26,43 @@ class _JsonParsingScreenState extends State<JsonParsingScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                List<AndroidVersion> versions = _parseJson(firstJsonInput);
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: versions.map((version) {
-                          return Text('${version.id}: ${version.title}');
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                );
-              },
-              child: Text('Parse Input 1'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                List<AndroidVersion> versions = _parseJson(secondJsonInput);
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: SingleChildScrollView(
-                      child: ListBody(
-                        children: versions.map((version) {
-                          return Text('${version.id}: ${version.title}');
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                );
-              },
-              child: Text('Parse Input 2'),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  inProgress =! inProgress ;
+                  setState(() { 
+                  });
+                },
+                child: Text('Parse Input one'),
+              ),
+              SizedBox(height: 10),
+              Visibility(
+              visible: inProgress == false,
+              replacement: _dataTable(_parseJson(firstJsonInput)),
+              child: Container(),
+              
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  inProgressTwo =! inProgressTwo ;
+                  setState(() {              
+                  });
+                },
+                child: Text('Parse Input Two'),
+              ),
+              SizedBox(height: 10),
+              Visibility(
+              visible: inProgressTwo == false,
+              replacement: _dataTable(_parseJson(secondJsonInput)),
+              child: Container(),     
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -73,20 +70,47 @@ class _JsonParsingScreenState extends State<JsonParsingScreen> {
 
   List<AndroidVersion> _parseJson(String jsonString) {
     final List<dynamic> jsonList = jsonDecode(jsonString);
-    List<AndroidVersion> versions = [];
+    List<AndroidVersion> parsedJson = [];
 
     for (var item in jsonList) {
       if (item is Map) {
         item.values.forEach((v) {
-          versions.add(AndroidVersion(id: v['id'], title: v['title']));
+          parsedJson.add(AndroidVersion(id: v['id'], title: v['title']));
         });
       } else if (item is List) {
         item.forEach((v) {
-          versions.add(AndroidVersion(id: v['id'], title: v['title']));
+          parsedJson.add(AndroidVersion(id: v['id'], title: v['title']));
         });
       }
     }
 
-    return versions;
+    return parsedJson;
+  }
+
+  Widget _dataTable (List <AndroidVersion> data) {
+    return DataTable(
+        columns: const <DataColumn>[
+          DataColumn(
+            label: Text(
+              'ID',
+              style: TextStyle(fontStyle: FontStyle.italic , fontSize: 18),
+            ),
+          ),
+          DataColumn(
+            label: Text(
+              'Value',
+              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 18 ),
+            ),
+          ),
+        ],
+        rows: data.map((item) {
+          return DataRow(
+            cells: <DataCell>[
+              DataCell(Text(item.id.toString() , style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),)),
+              DataCell(Text(item.title.toString(), style: TextStyle(fontSize: 18 , fontWeight: FontWeight.bold),),),
+            ],
+          );
+        }).toList(),
+      );
   }
 }
