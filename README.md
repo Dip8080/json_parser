@@ -1,16 +1,25 @@
-# json_parser
+# Flutter JSON Parsing
 
-A new Flutter project.
+This Flutter project demonstrates how to parse JSON data manually without using any state management or JSON POJO classes. It uses a single function to parse JSON data into a list of `AndroidVersion` objects and displays the parsed data using buttons.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Parse JSON data from static variables.
+- Display parsed JSON data using buttons.
+- No state management used.
+- JSON parsing done manually without using JSON POJO classes.
 
-A few resources to get you started if this is your first Flutter project:
+## Model Class
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+The `AndroidVersion` model class used for the parsed data:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```dart
+class AndroidVersion {
+  AndroidVersion({
+    this.id,
+    this.title,
+  });
+
+  int? id;
+  String? title;
+}
